@@ -5,10 +5,10 @@ app = Flask(__name__)
 
 @app.get("/")
 def root():
+  # Segunda API saudável (independente da api1)
   return "ok", 200
 
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=5000)
-
 

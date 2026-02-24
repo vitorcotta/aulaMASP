@@ -38,25 +38,16 @@ services:
       - api3
 
   api1:
-    build: ./api
+    build: ./api1
     container_name: api1
-    environment:
-      - API_NAME=api1
-      - API_BEHAVIOR=ok
 
   api2:
-    build: ./api
+    build: ./api2
     container_name: api2
-    environment:
-      - API_NAME=api2
-      - API_BEHAVIOR=ok
 
   api3:
-    build: ./api
+    build: ./api3
     container_name: api3
-    environment:
-      - API_NAME=api3
-      - API_BEHAVIOR=broken
 
 networks:
   default:

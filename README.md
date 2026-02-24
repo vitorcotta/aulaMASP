@@ -26,16 +26,12 @@ Nenhum dos `nginx` está configurado com **healthcheck** ou parâmetros de detec
   - Faz proxy para os serviços `api1`, `api2`, `api3` (porta 5000) via `upstream` `api_backend`
   - Balanceamento round-robin simples entre as 3 APIs, sem healthcheck.
 
-- **api1, api2, api3**
-  - Construídas a partir de `./api`
-  - Python + Flask, comportamento definido por variáveis de ambiente:
-    - `API_NAME`: identifica a instância (api1, api2, api3)
-    - `API_BEHAVIOR`:
-      - `ok` → responde normalmente
-      - `broken` → responde com erro HTTP 500 (falha simulada)
-  - Endpoints:
-    - `GET /` → retorna texto simples com nome da API e se está funcionando
-    - `GET /status` → retorna JSON com informações da instância e do comportamento
+- **api, api1, api2, api3**
+  - **`api/`**: API extra simples de exemplo (retorna sempre `ok`), que você pode usar para demonstrações separadas.
+  - **`api1/`, `api2/`, `api3/`**: 3 APIs **independentes** usadas pelo Nginx de API:
+    - Cada uma tem seu próprio código (`app.py`, `Dockerfile`, `requirements.txt`).
+    - `api1` e `api2`: retornam sempre `"ok"` com HTTP 200 em `GET /`.
+    - `api3`: retorna sempre `"erro"` com HTTP 500 em `GET /` (falha hardcoded para o exercício).
 
 ## Como executar
 
@@ -57,7 +53,7 @@ Isso vai:
   - `nginx_sites` em `localhost:8080`
   - `nginx_api` em `localhost:8081`
   - 3 containers `site` atrás do `nginx_sites`
-  - 3 containers de API (`api1`, `api2`, `api3`) atrás do `nginx_api` (sendo que `api3` está configurada como "broken")
+  - 3 containers de API (`api1`, `api2`, `api3`) atrás do `nginx_api` (sendo que `api3` está com erro hardcoded no código)
 
 ## Como usar no treinamento
 
@@ -68,8 +64,8 @@ Isso vai:
    - A requisição passa por:
      - Navegador → `nginx_sites` (balanceia entre site1/2/3) → HTML/JS
      - JS → `nginx_api` → `api1`/`api2`/`api3` → respostas diferentes:
-       - `api1` e `api2`: retornam sucesso (`200`) com mensagem `"<apiX>: estou funcionando"`
-       - `api3`: retorna erro (`500`) com mensagem de falha simulada
+       - `api1` e `api2`: retornam sucesso (`200`)
+       - `api3`: retorna erro (`500`)
 4. Você pode parar o lab com:
 
 ```bash
