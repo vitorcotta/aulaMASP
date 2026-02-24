@@ -40,14 +40,20 @@ services:
   api1:
     build: ./api1
     container_name: api1
+    ports:
+      - "9001:5000"
 
   api2:
     build: ./api2
     container_name: api2
+    ports:
+      - "9002:5000"
 
   api3:
     build: ./api3
     container_name: api3
+    ports:
+      - "9003:5000"
 
 networks:
   default:
