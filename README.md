@@ -54,12 +54,13 @@ Isso vai:
   - `nginx_api` em `localhost:8081`
   - 3 containers `site` atrás do `nginx_sites`
   - 3 containers de API (`api1`, `api2`, `api3`) atrás do `nginx_api` (sendo que `api3` está com erro hardcoded no código)
+  - 1 container `arquitetura` em `localhost:8090` servindo a página de diagrama da arquitetura
 
 ## Como usar no treinamento
 
 1. Abra o navegador em `http://localhost:8080`
 2. Veja a página do **Site do treinamento MASP**
-3. Clique em **"Consultar API"**
+3. Clique em **"Executar"**
    - O JS da página calcula o host atual (ex.: `localhost`) e chama `http://<host>:8081/`
    - A requisição passa por:
      - Navegador → `nginx_sites` (balanceia entre site1/2/3) → HTML/JS
@@ -71,6 +72,14 @@ Isso vai:
 ```bash
 docker compose down
 ```
+
+## Página de arquitetura (apoio ao instrutor)
+
+- As páginas de arquitetura também são servidas dentro do Docker pelo serviço `arquitetura`.
+- Para visualizar o diagrama da topologia:
+  - **Resposta rápida (sem spoilers)**: `http://localhost:8090/` (ou `http://SEU_IP:8090/`)
+  - **Completa (com detalhes/spoilers)**: `http://localhost:8090/tudo.html` (ou `http://SEU_IP:8090/tudo.html`)
+  - Use apenas como material de apoio para o instrutor; os participantes não precisam ter acesso direto.
 
 ## Customizações sugeridas para o LAB
 

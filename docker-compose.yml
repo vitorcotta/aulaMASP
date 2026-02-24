@@ -55,6 +55,14 @@ services:
     ports:
       - "9003:5000"
 
+  arquitetura:
+    build:
+      context: .
+      dockerfile: Dockerfile.arquitetura
+    container_name: arquitetura
+    ports:
+      - "8090:80"
+
 networks:
   default:
     name: masp_lab
