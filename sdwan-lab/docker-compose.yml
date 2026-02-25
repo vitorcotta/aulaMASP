@@ -1,0 +1,103 @@
+version: "3.9"
+
+services:
+  branch:
+    build: ./branch
+    container_name: sdwan_branch
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./logs:/logs
+    networks:
+      wan1:
+        ipv4_address: 10.10.1.10
+      wan2:
+        ipv4_address: 10.10.2.10
+    depends_on:
+      - hub
+      - isp1
+      - isp2
+    environment:
+      - SDWAN_MODE=v1  # v1 = flapping, v2 = fix com histerese
+
+  hub:
+    build: ./hub
+    container_name: sdwan_hub
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    networks:
+      wan1:
+        ipv4_address: 10.10.1.20
+      wan2:
+        ipv4_address: 10.10.2.20
+      lan:
+        ipv4_address: 10.20.0.1
+    depends_on:
+      - isp1
+      - isp2
+      - app
+
+  isp1:
+    build: ./isp
+    container_name: sdwan_isp1
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ISP_NAME=isp1
+      - BASE_DELAY_MS=18
+      - JITTER_MS=3
+    networks:
+      wan1:
+        ipv4_address: 10.10.1.1
+
+  isp2:
+    build: ./isp
+    container_name: sdwan_isp2
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ISP_NAME=isp2
+      - BASE_DELAY_MS=20
+      - JITTER_MS=3
+    networks:
+      wan2:
+        ipv4_address: 10.10.2.1
+
+  app:
+    build: ./app
+    container_name: sdwan_app
+    networks:
+      lan:
+        ipv4_address: 10.20.0.100
+    ports:
+      - "18080:8080"  # acesso direto ao app (debug)
+
+  monitor:
+    build: ./monitor
+    container_name: sdwan_monitor
+    volumes:
+      - ./logs:/logs:ro
+    ports:
+      - "19090:9090"
+
+networks:
+  wan1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.1.0/24
+  wan2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.2.0/24
+  lan:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.20.0.0/24
+
