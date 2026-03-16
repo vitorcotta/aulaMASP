@@ -233,22 +233,6 @@
           <code>italico</code>
         </p>
 
-        <div id="host-links" class="panel" style="margin-top:1rem">
-          <h2>Links rápidos usando o IP detectado</h2>
-          <p style="margin:0.25rem 0">Detectado: <strong id="detected-ip">detectando...</strong>
-            <br /><small id="detected-ip-details" style="color:#9ca3af"></small>
-          </p>
-          <ul style="margin-top:0.6rem">
-            <li>Sites (load balancer): <a id="link-sites" href="#" style="display:none"></a></li>
-            <li>Topologia completa: <a id="link-tudo" href="#" style="display:none"></a></li>
-            <li>API (nginx api LB): <a id="link-api-lb" href="#" style="display:none"></a></li>
-            <li>api1: <a id="link-api1" href="#" style="display:none"></a></li>
-            <li>api2: <a id="link-api2" href="#" style="display:none"></a></li>
-            <li>api3: <a id="link-api3" href="#" style="display:none"></a></li>
-          </ul>
-          <div class="panel-footer">Obs: se o navegador bloquear a descoberta de IP local, o IP público (ou o hostname atual) será usado.</div>
-        </div>
-
         <div class="diagram">
           <!-- Navegador ⬇ Nginx (sites) -->
           <div class="row">
@@ -376,64 +360,6 @@
         </div>
       </aside>
     </div>
-    <script>
-      async function getPublicIP(){
-        try{
-          const r = await fetch('https://api.ipify.org?format=json');
-          const j = await r.json();
-          return j.ip;
-        }catch(e){return null;}
-      }
-
-      function getLocalIPs(){
-        return new Promise((resolve)=>{
-          const ips = new Set();
-          try{
-            const pc = new RTCPeerConnection({iceServers:[]});
-            pc.createDataChannel('');
-            pc.createOffer().then(sdp=>pc.setLocalDescription(sdp)).catch(()=>{});
-            pc.onicecandidate = (e)=>{
-              if(!e.candidate){
-                resolve(Array.from(ips));
-                pc.close();
-                return;
-              }
-              const parts = e.candidate.candidate.split(' ');
-              const addr = parts[4] || parts[2];
-              if(addr) ips.add(addr);
-            };
-            // fallback timeout
-            setTimeout(()=>{ try{ pc.close(); }catch(e){}; resolve(Array.from(ips)); }, 1500);
-          }catch(e){ resolve([]); }
-        });
-      }
-
-      (async function(){
-        const publicIP = await getPublicIP();
-        const localIPs = await getLocalIPs().catch(()=>[]);
-        const ip = (localIPs && localIPs.length>0) ? localIPs[0] : (publicIP || window.location.hostname);
-        document.getElementById('detected-ip').textContent = ip;
-        const detailsEl = document.getElementById('detected-ip-details');
-        const details = [];
-        if(localIPs && localIPs.length) details.push('LAN: '+localIPs.join(', '));
-        if(publicIP) details.push('Public: '+publicIP);
-        detailsEl.textContent = details.join(' · ');
-
-        const make = (port, path='') => 'http://' + ip + ':' + port + path;
-        const mapping = [
-          ['link-sites', make(8080,'/')],
-          ['link-tudo', make(8080,'/tudo.html')],
-          ['link-api-lb', make(8081,'/')],
-          ['link-api1', make(9001,'/')],
-          ['link-api2', make(9002,'/')],
-          ['link-api3', make(9003,'/')]
-        ];
-        mapping.forEach(([id, href])=>{
-          const a = document.getElementById(id);
-          if(a){ a.href = href; a.textContent = href; a.style.display = 'inline-block'; }
-        });
-      })();
-    </script>
   </body>
 </html>
 
