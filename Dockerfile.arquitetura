@@ -1,5 +1,7 @@
 FROM nginx:stable-alpine
 
-COPY arquitetura.html /usr/share/nginx/html/index.html
+COPY arquitetura.html /usr/share/nginx/html/arquitetura.html
 COPY arquitetura-tudo.html /usr/share/nginx/html/tudo.html
+COPY arquitetura-popup.html /usr/share/nginx/html/arquitetura-popup.html
+COPY img /usr/share/nginx/html/img
 
