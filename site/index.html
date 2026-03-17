@@ -112,7 +112,6 @@
       <button id="btn">
         <span>Executar</span>
       </button>
-      <button id="btn-image" style="margin-top:0.75rem; background:#3b82f6; color:#fff; border:none; border-radius:0.6rem; padding:0.55rem 1rem; cursor:pointer;">Abrir imagem de debug</button>
     </main>
 
     <div id="imgModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index:1000;">
@@ -122,18 +121,10 @@
           <button id="closeImg" style="border:none; background:#ef4444; color:#fff; border-radius:0.45rem; padding:0.25rem 0.45rem; cursor:pointer;">Fechar</button>
         </div>
         <img src="http://gab43900i.aguiabranca.com.br:8090/img/HwJ9GR.png" alt="qrcode" style="width:100%; max-height:70vh; object-fit:contain; border-radius:0.4rem; border:1px solid #334155;" />
+
       </div>
     </div>
-
     <script src="script.js"></script>
-    <script>
-      const btnImage = document.getElementById('btn-image');
-      const modal = document.getElementById('imgModal');
-      const closeImg = document.getElementById('closeImg');
-      btnImage.addEventListener('click', ()=>{ modal.style.display='flex'; });
-      closeImg.addEventListener('click', ()=>{ modal.style.display='none'; });
-      modal.addEventListener('click', e=>{ if(e.target===modal){ modal.style.display='none'; }});
-    </script>
   </body>
 </html>
 

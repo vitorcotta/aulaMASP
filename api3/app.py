@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 @app.get("/")
 def root():
-  # API propositalmente quebrada para o exercício
-  return "erro", 500
+  # API agora retorna OK para evitar 500 no balanceador
+  return "ok", 200
 
 
 if __name__ == "__main__":
